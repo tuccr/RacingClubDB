@@ -1,4 +1,3 @@
--- 
 -- RacingClubDB - queries
 
 USE RacingClubDB;
