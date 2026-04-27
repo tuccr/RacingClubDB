@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racing Club Database</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Racing Club Database System</h1>
+        <p>Simple frontend connected to the RacingClubDB MySQL database.</p>
+        <div id="status">Checking database connection...</div>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Drivers</h2>
+            <div class="row">
+                <input id="searchDriver" placeholder="Search by driver ID">
+                <button onclick="loadDrivers()">Search / Refresh</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ranking</th>
+                            <th>Salary</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="driversTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card">
+                <h2>Insert New Driver</h2>
+                <form id="driverForm">
+                    <input name="driverid" placeholder="Driver ID, ex: D101" required>
+                    <input name="ranking" type="number" placeholder="Ranking" required>
+                    <input name="salary" type="number" step="0.01" placeholder="Salary" required>
+                    <input name="dwins" type="number" placeholder="Wins" value="0">
+                    <input name="dlosses" type="number" placeholder="Losses" value="0">
+                    <button type="submit">Insert Driver</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Sign Driver Contract</h2>
+                <form id="contractForm">
+                    <input name="driverid" placeholder="Driver ID" required>
+                    <select name="teamid" id="teamSelect" required></select>
+                    <label>Start Date</label>
+                    <input name="start_date" type="date" required>
+                    <label>End Date, optional</label>
+                    <input name="end_date" type="date">
+                    <button type="submit">Insert Contract</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Insert Race Result</h2>
+                <form id="raceResultForm">
+                    <select name="raceid" id="raceSelect" required></select>
+                    <input name="driverid" placeholder="Driver ID" required>
+                    <input name="resplace" type="number" min="1" placeholder="Finishing Place" required>
+                    <button type="submit">Insert Race Result</button>
+                    <p class="note">Your database trigger updates driver win/loss totals after insert.</p>
+                </form>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Reports and Views</h2>
+            <div class="button-bar">
+                <button onclick="loadEndpoint('/api/report/team-leaderboard', 'resultsTitle', 'resultsTable', 'Team Leaderboard Report')">Team Leaderboard</button>
+                <button onclick="loadEndpoint('/api/report/free-agents', 'resultsTitle', 'resultsTable', 'Free Agents Report')">Free Agents</button>
+                <button onclick="loadEndpoint('/api/views/race-outcomes', 'resultsTitle', 'resultsTable', 'View: Race Outcomes')">View 1: Race Outcomes</button>
+                <button onclick="loadEndpoint('/api/views/track-history', 'resultsTitle', 'resultsTable', 'View 2: Track Race History')">View 2: Track History</button>
+            </div>
+            <h3 id="resultsTitle">Choose a report or view</h3>
+            <div class="table-wrap">
+                <table id="resultsTable"></table>
+            </div>
+        </section>
+    </main>
+
+    <div id="message"></div>
+    <script src="app.js"></script>
+</body>
+</html>
