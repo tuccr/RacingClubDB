@@ -1,4 +1,6 @@
+-- ============================================================
 -- RacingClubDB - TRIGGERS
+-- ============================================================
 
 USE RacingClubDB;
 
@@ -30,17 +32,16 @@ BEGIN
     END IF;
 END$$
 
--- 3) Business logic: when a vehicle is traded to a new team,
---    auto-close the previous open ownership row.
-DROP TRIGGER IF EXISTS trg_vehicleownership_before_insert$$
-CREATE TRIGGER trg_vehicleownership_before_insert
-BEFORE INSERT ON VehicleOwnership
+-- 3) Validation: reject race results where the place value is invalid (< 1).
+DROP TRIGGER IF EXISTS trg_raceresults_before_insert$$
+CREATE TRIGGER trg_raceresults_before_insert
+BEFORE INSERT ON RaceResults
 FOR EACH ROW
 BEGIN
-    UPDATE VehicleOwnership
-    SET own_end_date = NEW.own_start_date
-    WHERE vid = NEW.vid
-      AND own_end_date IS NULL;
+    IF NEW.resplace < 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'resplace must be >= 1.';
+    END IF;
 END$$
 
 DELIMITER ;

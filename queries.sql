@@ -1,8 +1,8 @@
--- RacingClubDB - queries
+-- RacingClubDB - QUERIES
 
 USE RacingClubDB;
 
--- INSERT examples
+-- INSERT
 
 -- Add a new driver
 INSERT INTO Drivers (driverid, ranking, salary, dwins, dlosses)
@@ -17,7 +17,7 @@ INSERT INTO RaceResults (raceid, driverid, resplace)
 VALUES ('R005', 'D101', 1);
 
 
--- UPDATE examples
+-- UPDATE
 
 -- Give a driver a raise
 UPDATE Drivers
@@ -35,18 +35,22 @@ SET end_date = '2026-06-30'
 WHERE driverid = 'D101' AND teamid = 'T01';
 
 
--- DELETE examples
+-- DELETE
 
--- Remove a race result (triggers roll back driver + team counters)
+-- Remove a race result
 DELETE FROM RaceResults
 WHERE raceid = 'R005' AND driverid = 'D101';
 
--- Remove a driver only after their contract is closed (trigger enforces this)
+-- Remove the contract first (FK constraint requires this before deleting the driver)
+DELETE FROM Contracts
+WHERE driverid = 'D101';
+
+-- Now the driver can be deleted safely
 DELETE FROM Drivers
 WHERE driverid = 'D101';
 
 
--- SEARCH examples
+-- SEARCH
 
 -- All drivers currently signed to a specific team
 SELECT d.driverid, d.ranking, d.salary, c.start_date
@@ -76,6 +80,7 @@ WHERE (dwins + dlosses) > 0
 ORDER BY win_pct DESC;
 
 
+-- REPORT
 
 -- Top 5 drivers by total wins
 SELECT driverid, dwins, dlosses
